@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_DB: order-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+
+  user-authentication-service:
+    build: ./user-authentication-service
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+
+  product-management-service:
+    build: ./product-management-service
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongo
+
+  order-processing-service:
+    build: ./order-processing-service
+    ports:
+      - "3002:3002"
+    depends_on:
+      - postgres
